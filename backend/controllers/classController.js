@@ -26,6 +26,8 @@ const createClass = asyncHandler(async (req, res) => {
       presence: false,
       absence: false,
       rescheduled: false,
+      colorChange: false,
+      lockButton: false,
       rescheduledPresence: rescheduledPresence,
     });
   } else {
@@ -38,6 +40,8 @@ const createClass = asyncHandler(async (req, res) => {
       presence: false,
       absence: false,
       rescheduled: false,
+      colorChange: false,
+      lockButton: false,
       rescheduledPresence: false,
     });
   }
@@ -52,7 +56,7 @@ const createClass = asyncHandler(async (req, res) => {
     student_id: student_id,
     class_id: lesson._id,
   });
-  console.log(lesson);
+
   if (student) {
     res.status(200).json({ class: lesson });
   }
@@ -96,13 +100,10 @@ const getStudentClass = asyncHandler(async (req, res) => {
   const { student_id } = req.params;
   const lesson = await Class.find({ student_id: student_id });
   if (!lesson) {
-    console.log("inside");
     res.status(400);
     throw new Error("Lesson doesn't exist");
   }
 
-  console.log("here");
-  //   console.log(lesson);
   res.status(200).json(lesson);
 });
 
@@ -113,8 +114,26 @@ const deleteClass = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Class doesn't exist");
   }
+  const student = await Student.findById(lesson.student_id);
+  if (lesson.absence) {
+    await Student.findByIdAndUpdate(lesson.student_id, {
+      bank: student.bank - 1,
+    });
+  }
+  if (lesson.presence) {
+    await Student.findByIdAndUpdate(lesson.student_id, {
+      presence: student.presence - 1,
+    });
+  }
+  if (lesson.rescheduledPresence) {
+    await Student.findByIdAndUpdate(lesson.student_id, {
+      presence: student.presence - 1,
+      bank: student.bank + 1,
+    });
+  }
+
   const findPay = await Pay.find({ class_id: class_id });
-  //   console.log(findPay._id.ObjectId().valueOf());
+
   await Pay.deleteOne({ findPay });
   await Class.findByIdAndDelete(class_id);
   res.status(204).json({ Msg: "Deleted" });

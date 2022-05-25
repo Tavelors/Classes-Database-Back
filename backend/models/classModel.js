@@ -35,6 +35,12 @@ const classSchema = new Schema(
     rescheduledPresence: {
       type: Boolean,
     },
+    colorChange: {
+      type: Boolean,
+    },
+    lockButton: {
+      type: Boolean,
+    },
   },
   {
     timestamps: true,

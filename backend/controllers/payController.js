@@ -38,8 +38,19 @@ const getAllPay = asyncHandler(async (req, res) => {
   res.status(200).json(pay);
 });
 
+const getPayByClassId = asyncHandler(async (req, res) => {
+  const { class_id } = req.params;
+  const pay = await Pay.find({ class_id: class_id });
+  if (!pay) {
+    res.status(400);
+    throw new Error("No Payment");
+  }
+  res.status(200).json(pay);
+});
+
 module.exports = {
   putPay,
   getPayByStudentId,
   getAllPay,
+  getPayByClassId,
 };
