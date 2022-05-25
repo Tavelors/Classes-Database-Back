@@ -91,7 +91,7 @@ const getClass = asyncHandler(async (req, res) => {
     res.status(200).json(lesson);
   }
 });
-
+//
 const getStudentClass = asyncHandler(async (req, res) => {
   const { student_id } = req.params;
   const lesson = await Class.find({ student_id: student_id });
