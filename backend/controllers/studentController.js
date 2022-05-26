@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const Student = require("../models/studentModel");
 const Class = require("../models/classModel");
+const Pay = require("../models/payModel");
 // POST /api/student
 const createStudent = asyncHandler(async (req, res) => {
   const { firstName, lastName } = req.body;
@@ -20,6 +21,16 @@ const createStudent = asyncHandler(async (req, res) => {
     bank: 0,
     paymentStatus: false,
   });
+
+  await Pay.create({
+    firstName: student.firstName,
+    lastName: student.lastName,
+    paymentType: false,
+    paid: false,
+    concluded: false,
+    student_id: student._id,
+  });
+
   if (student) {
     res.status(200).json(student);
   }

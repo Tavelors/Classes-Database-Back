@@ -9,12 +9,10 @@ const paySchema = new Schema(
     lastName: {
       type: String,
     },
-    upFront: {
+    paymentType: {
       type: Boolean,
     },
-    afterMonth: {
-      type: Boolean,
-    },
+
     paid: {
       type: Boolean,
     },
@@ -27,12 +25,15 @@ const paySchema = new Schema(
     created: {
       type: Date,
     },
-    class_id: {
-      type: Schema.Types.ObjectId,
+    dateChange: {
+      type: Date,
     },
-    user_id: {
-      type: Schema.Types.ObjectId,
-    },
+    // class_id: {
+    //   type: Schema.Types.ObjectId,
+    // },
+    // user_id: {
+    //   type: Schema.Types.ObjectId,
+    // },
   },
   {
     timestamps: true,

@@ -46,16 +46,16 @@ const createClass = asyncHandler(async (req, res) => {
     });
   }
 
-  const pay = await Pay.create({
-    firstName: lesson.firstName,
-    lastName: lesson.lastName,
-    upFront: false,
-    afterMonth: false,
-    paid: false,
-    concluded: false,
-    student_id: student_id,
-    class_id: lesson._id,
-  });
+  // const pay = await Pay.create({
+  //   firstName: lesson.firstName,
+  //   lastName: lesson.lastName,
+  //   upFront: false,
+  //   afterMonth: false,
+  //   paid: false,
+  //   concluded: false,
+  //   student_id: student_id,
+  //   class_id: lesson._id,
+  // });
 
   if (student) {
     res.status(200).json({ class: lesson });
@@ -113,30 +113,28 @@ const deleteClass = asyncHandler(async (req, res) => {
   if (!lesson) {
     res.status(400);
     throw new Error("Class doesn't exist");
-  }
-  const student = await Student.findById(lesson.student_id);
-  if (lesson.absence) {
-    await Student.findByIdAndUpdate(lesson.student_id, {
-      bank: student.bank - 1,
-    });
-  }
-  if (lesson.presence) {
-    await Student.findByIdAndUpdate(lesson.student_id, {
-      presence: student.presence - 1,
-    });
-  }
-  if (lesson.rescheduledPresence) {
-    await Student.findByIdAndUpdate(lesson.student_id, {
-      presence: student.presence - 1,
-      bank: student.bank + 1,
-    });
-  }
+  } else {
+    const student = await Student.findById(lesson.student_id);
+    if (lesson.absence) {
+      await Student.findByIdAndUpdate(lesson.student_id, {
+        bank: student.bank - 1,
+      });
+    }
+    if (lesson.presence) {
+      await Student.findByIdAndUpdate(lesson.student_id, {
+        presence: student.presence - 1,
+      });
+    }
+    if (lesson.rescheduledPresence) {
+      await Student.findByIdAndUpdate(lesson.student_id, {
+        presence: student.presence - 1,
+        bank: student.bank + 1,
+      });
+    }
 
-  const findPay = await Pay.find({ class_id: class_id });
-
-  await Pay.deleteOne({ findPay });
-  await Class.findByIdAndDelete(class_id);
-  res.status(204).json({ Msg: "Deleted" });
+    await Class.findByIdAndDelete(class_id);
+    res.status(204).json({ Msg: "Deleted" });
+  }
 });
 
 module.exports = {

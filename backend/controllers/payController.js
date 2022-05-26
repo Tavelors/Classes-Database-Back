@@ -7,6 +7,7 @@ const Pay = require("../models/payModel");
 
 const putPay = asyncHandler(async (req, res) => {
   const { pay_id } = req.params;
+  const { paid } = req.body;
 
   const findPay = await Pay.findById(pay_id);
   if (!findPay) {
@@ -14,6 +15,17 @@ const putPay = asyncHandler(async (req, res) => {
     throw new Error("Pay not found");
   }
 
+  const student = await Student.findByIdAndUpdate(
+    findPay.student_id,
+    {
+      paymentStatus: paid,
+    },
+    {
+      new: true,
+      upsert: true,
+      timestamps: { createdAt: false, updatedAt: true },
+    }
+  );
   const update = await Pay.findByIdAndUpdate(pay_id, req.body, {
     new: true,
     upsert: true,
