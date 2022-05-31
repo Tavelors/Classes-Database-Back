@@ -26,6 +26,9 @@ const studentSchema = new Schema(
     paymentStatus: {
       type: Boolean,
     },
+    concluded: {
+      type: Boolean,
+    },
   },
   {
     timestamps: true,

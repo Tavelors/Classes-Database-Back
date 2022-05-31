@@ -28,6 +28,7 @@ const paySchema = new Schema(
     dateChange: {
       type: Date,
     },
+
     // class_id: {
     //   type: Schema.Types.ObjectId,
     // },

@@ -4,6 +4,7 @@ const asyncHandler = require("express-async-handler");
 const Student = require("../models/studentModel");
 const Class = require("../models/classModel");
 const Pay = require("../models/payModel");
+const Log = require("../models/logModel");
 // POST /api/student
 const createStudent = asyncHandler(async (req, res) => {
   const { firstName, lastName } = req.body;
@@ -20,6 +21,7 @@ const createStudent = asyncHandler(async (req, res) => {
     presence: 0,
     bank: 0,
     paymentStatus: false,
+    concluded: false,
   });
 
   await Pay.create({
@@ -38,7 +40,9 @@ const createStudent = asyncHandler(async (req, res) => {
 
 const updateStudent = asyncHandler(async (req, res) => {
   const { student_id } = req.params;
+
   const {
+    logNote,
     firstName,
     lastName,
     created,
@@ -46,7 +50,19 @@ const updateStudent = asyncHandler(async (req, res) => {
     presence,
     bank,
     paymentStatus,
+    concluded,
   } = req.body;
+  const log = await Log.find({});
+  if (log.length >= 50) {
+    await Log.findByIdAndDelete(log[0]._id);
+  }
+  console.log(logNote);
+  if (logNote) {
+    await Log.create({
+      logNote: logNote,
+      created: new Date(),
+    });
+  }
   const student = await Student.findById(student_id);
   let studentUpdate = {
     firstName: firstName,
@@ -56,6 +72,7 @@ const updateStudent = asyncHandler(async (req, res) => {
     presence: presence,
     bank: bank,
     paymentStatus: paymentStatus,
+    concluded: concluded,
   };
   //   console.log(presenceCheck);
   if (bank !== undefined && presence !== undefined) {
@@ -67,6 +84,7 @@ const updateStudent = asyncHandler(async (req, res) => {
       presence: student.presence + presence,
       bank: student.bank + bank,
       paymentStatus: paymentStatus,
+      concluded: concluded,
     };
   }
   if (presence !== undefined && bank === undefined) {
@@ -78,6 +96,7 @@ const updateStudent = asyncHandler(async (req, res) => {
       presence: student.presence + presence,
       bank: bank,
       paymentStatus: paymentStatus,
+      concluded: concluded,
     };
   }
   if (bank !== undefined && presence === undefined) {
@@ -89,6 +108,7 @@ const updateStudent = asyncHandler(async (req, res) => {
       presence: presence,
       bank: student.bank + bank,
       paymentStatus: paymentStatus,
+      concluded: concluded,
     };
   }
 
@@ -108,31 +128,9 @@ const updateStudent = asyncHandler(async (req, res) => {
 });
 
 const getStudents = asyncHandler(async (req, res) => {
-  const student = await Student.find({});
-  //   let array = [];
-  //   let counter = 0;
-  //   for (let i = 0; i < student.length; i++) {
-  //     counter = 0;
-  //     const lesson = await Class.find({ student_id: student[i]._id });
-  //     for (let j = 0; j < lesson.length; j++) {
-  //       if (
-  //         lesson[j].student_id.equals(student[i]._id) &&
-  //         lesson[j].presence === true
-  //       )
-  //         counter++;
+  const student = await Student.find({}).sort({ _id: -1 });
+  const pay = await Pay.find({}).sort();
 
-  //       if (j === lesson.length - 1) array.push(counter);
-  //     }
-  //   }
-  //   for (let i = 0; i < student.length; i++) {
-  //     student[i].presence = array[i];
-  //   }
-
-  //   const doc = await Student.find({});
-  //   console.log(doc);
-  //   await student.save();
-  //   console.log(newStudent);
-  //   console.log(student);
   res.status(200).json(student);
 });
 
@@ -147,4 +145,94 @@ const getStudentById = asyncHandler(async (req, res) => {
   res.status(200).json(student);
 });
 
-module.exports = { createStudent, getStudents, updateStudent, getStudentById };
+const getStudentQuery = asyncHandler(async (req, res) => {
+  console.log(req.body);
+  console.log(req.query);
+  let firstQuery = req.query.sort_by.split(",")[0];
+  let secondQuery = req.query.sort_by.split(",")[1];
+  let thirdQuery = req.query.sort_by.split(",")[2];
+  //   const fourthQuery = req.query.sort_by.split(",")[3];
+  if (secondQuery === "Select" || secondQuery === "Default") {
+    secondQuery = "";
+  }
+  if (firstQuery === "Select") {
+    firstQuery = "";
+  }
+  if (thirdQuery === "Select") {
+    thirdQuery = "";
+  }
+  console.log(firstQuery);
+  console.log(secondQuery);
+  console.log(thirdQuery);
+
+  let student;
+
+  if (firstQuery && !thirdQuery && !secondQuery) {
+    if (!thirdQuery) {
+      thirdQuery = "asc";
+    }
+    console.log(secondQuery, "in 3");
+    student = await Student.find({}).sort({
+      [firstQuery]: thirdQuery,
+    });
+  }
+  if (!firstQuery && !thirdQuery && secondQuery) {
+    console.log(secondQuery, "in 4");
+    student = await Student.find({ concluded: secondQuery });
+  }
+  if (!firstQuery && !thirdQuery && !secondQuery) {
+    console.log(secondQuery, "in 5");
+    student = await Student.find({});
+  }
+  if (!thirdQuery) {
+    thirdQuery = "asc";
+  }
+  if (firstQuery && secondQuery && thirdQuery) {
+    console.log(secondQuery, "in 1");
+    student = await Student.find({ concluded: secondQuery }).sort({
+      [firstQuery]: thirdQuery,
+    });
+  }
+  if (!firstQuery && !secondQuery && thirdQuery) {
+    console.log(secondQuery, "in 1");
+    student = await Student.find();
+  }
+  if (!firstQuery && secondQuery && thirdQuery) {
+    console.log(secondQuery, "in 1");
+    student = await Student.find({ concluded: secondQuery });
+  }
+  if (firstQuery && thirdQuery && !secondQuery) {
+    console.log(secondQuery, "in 2");
+    student = await Student.find({}).sort({
+      [firstQuery]: thirdQuery,
+    });
+  }
+
+  res.status(200).json(student);
+});
+
+const deleteStudent = asyncHandler(async (req, res) => {
+  const { student_id } = req.params;
+  const { logNote } = req.body;
+  const log = await Log.find({});
+  if (log.length >= 50) {
+    await Log.findByIdAndDelete(log[0]._id);
+  }
+  if (logNote) {
+    await Log.create({
+      logNote: logNote,
+      created: new Date(),
+    });
+  }
+  await Class.deleteMany({ student_id: student_id });
+  await Student.findByIdAndDelete(student_id);
+  res.status(204).json({ msg: "Deleted" });
+});
+module.exports = {
+  createStudent,
+  getStudents,
+  updateStudent,
+  getStudentById,
+  getStudentQuery,
+  deleteStudent,
+};

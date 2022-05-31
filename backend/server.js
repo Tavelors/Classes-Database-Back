@@ -16,6 +16,7 @@ app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/students", require("./routes/studentRoutes"));
 app.use("/api/class", require("./routes/classRoutes"));
 app.use("/api/pay", require("./routes/payRoutes"));
+app.use("/api/log", require("./routes/logRoutes"));
 app.listen(port, () => {
   console.log(`listening on ${port}`);
 });

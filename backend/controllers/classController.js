@@ -4,16 +4,34 @@ const asyncHandler = require("express-async-handler");
 const Class = require("../models/classModel");
 const Student = require("../models/studentModel");
 const Pay = require("../models/payModel");
+const Log = require("../models/logModel");
 const createClass = asyncHandler(async (req, res) => {
   const { student_id } = req.params;
   const { rescheduledPresence } = req.body;
   const student = await Student.findById(student_id);
-
+  const { logNote } = req.body;
   if (!student) {
     res.status(400);
     throw new Error(`Student not found`);
   }
-
+  console.log(logNote);
+  const log = await Log.find({});
+  if (log.length >= 50) {
+    await Log.findByIdAndDelete(log[0]._id);
+  }
+  if (logNote) {
+    console.log("hi");
+    await Log.create({
+      logNote: logNote,
+      created: new Date(),
+    });
+  }
+  const findClassLength = await Class.find({ student_id: student.id });
+  let classNum = 1;
+  console.log(findClassLength);
+  if (findClassLength.length !== 0) {
+    classNum = findClassLength[findClassLength.length - 1].classNumber + 1;
+  }
   let lesson;
 
   if (rescheduledPresence) {
@@ -22,13 +40,14 @@ const createClass = asyncHandler(async (req, res) => {
       lastName: student.lastName,
       student_id: student_id,
       created: new Date(),
-      booked: student.booked++,
       presence: false,
       absence: false,
       rescheduled: false,
       colorChange: false,
       lockButton: false,
       rescheduledPresence: rescheduledPresence,
+      classNumber: classNum,
+      description: "",
     });
   } else {
     lesson = await Class.create({
@@ -36,13 +55,14 @@ const createClass = asyncHandler(async (req, res) => {
       lastName: student.lastName,
       student_id: student_id,
       created: new Date(),
-      booked: student.booked++,
       presence: false,
       absence: false,
       rescheduled: false,
       colorChange: false,
       lockButton: false,
       rescheduledPresence: false,
+      classNumber: classNum,
+      description: "",
     });
   }
 
@@ -62,8 +82,198 @@ const createClass = asyncHandler(async (req, res) => {
   }
 });
 
+const createTenClass = asyncHandler(async (req, res) => {
+  const { student_id } = req.params;
+  const { logNote } = req.body;
+  const student = await Student.findById(student_id);
+  if (!student) {
+    res.status(400);
+    throw new Error(`Student not found`);
+  }
+  console.log(logNote);
+  const log = await Log.find({});
+  if (log.length >= 50) {
+    await Log.findByIdAndDelete(log[0]._id);
+  }
+  if (logNote) {
+    console.log("hi");
+    await Log.create({
+      logNote: logNote,
+      created: new Date(),
+    });
+  }
+  const findClassLength = await Class.find({ student_id: student.id });
+  let classNum = 1;
+  if (findClassLength.length !== 0) {
+    classNum = findClassLength[findClassLength.length - 1].classNumber + 1;
+  }
+  const classOne = await Class.create({
+    firstName: student.firstName,
+    lastName: student.lastName,
+    student_id: student_id,
+    created: new Date(),
+    presence: false,
+    absence: false,
+    rescheduled: false,
+    colorChange: false,
+    lockButton: false,
+    rescheduledPresence: false,
+    classNumber: classNum,
+    description: "",
+  });
+  const classTwo = await Class.create({
+    firstName: student.firstName,
+    lastName: student.lastName,
+    student_id: student_id,
+    created: new Date(),
+    presence: false,
+    absence: false,
+    rescheduled: false,
+    colorChange: false,
+    lockButton: false,
+    rescheduledPresence: false,
+    classNumber: classNum + 1,
+    description: "",
+  });
+  const classThree = await Class.create({
+    firstName: student.firstName,
+    lastName: student.lastName,
+    student_id: student_id,
+    created: new Date(),
+    presence: false,
+    absence: false,
+    rescheduled: false,
+    colorChange: false,
+    lockButton: false,
+    rescheduledPresence: false,
+    classNumber: classNum + 2,
+    description: "",
+  });
+  const classFour = await Class.create({
+    firstName: student.firstName,
+    lastName: student.lastName,
+    student_id: student_id,
+    created: new Date(),
+    presence: false,
+    absence: false,
+    rescheduled: false,
+    colorChange: false,
+    lockButton: false,
+    rescheduledPresence: false,
+    classNumber: classNum + 3,
+    description: "",
+  });
+  const classFive = await Class.create({
+    firstName: student.firstName,
+    lastName: student.lastName,
+    student_id: student_id,
+    created: new Date(),
+    presence: false,
+    absence: false,
+    rescheduled: false,
+    colorChange: false,
+    lockButton: false,
+    rescheduledPresence: false,
+    classNumber: classNum + 4,
+    description: "",
+  });
+  const classSix = await Class.create({
+    firstName: student.firstName,
+    lastName: student.lastName,
+    student_id: student_id,
+    created: new Date(),
+    presence: false,
+    absence: false,
+    rescheduled: false,
+    colorChange: false,
+    lockButton: false,
+    rescheduledPresence: false,
+    classNumber: classNum + 5,
+    description: "",
+  });
+  const classSeven = await Class.create({
+    firstName: student.firstName,
+    lastName: student.lastName,
+    student_id: student_id,
+    created: new Date(),
+    presence: false,
+    absence: false,
+    rescheduled: false,
+    colorChange: false,
+    lockButton: false,
+    rescheduledPresence: false,
+    classNumber: classNum + 6,
+    description: "",
+  });
+  const classEight = await Class.create({
+    firstName: student.firstName,
+    lastName: student.lastName,
+    student_id: student_id,
+    created: new Date(),
+    presence: false,
+    absence: false,
+    rescheduled: false,
+    colorChange: false,
+    lockButton: false,
+    rescheduledPresence: false,
+    classNumber: classNum + 7,
+    description: "",
+  });
+  const classNine = await Class.create({
+    firstName: student.firstName,
+    lastName: student.lastName,
+    student_id: student_id,
+    created: new Date(),
+    presence: false,
+    absence: false,
+    rescheduled: false,
+    colorChange: false,
+    lockButton: false,
+    rescheduledPresence: false,
+    classNumber: classNum + 8,
+    description: "",
+  });
+  const classTen = await Class.create({
+    firstName: student.firstName,
+    lastName: student.lastName,
+    student_id: student_id,
+    created: new Date(),
+    presence: false,
+    absence: false,
+    rescheduled: false,
+    colorChange: false,
+    lockButton: false,
+    rescheduledPresence: false,
+    classNumber: classNum + 9,
+    description: "",
+  });
+  res.status(200).json({
+    classOne: classOne,
+    classTwo: classTwo,
+    classThree: classThree,
+    classFour: classFour,
+    classFive: classFive,
+    classSix: classSix,
+    classSeven: classSeven,
+    classEight: classEight,
+    classNine: classNine,
+    classTen: classTen,
+  });
+});
+
 const updateClass = asyncHandler(async (req, res) => {
   const { class_id } = req.params;
+  const { logNote } = req.body;
+  const log = await Log.find({});
+  if (log.length >= 50) {
+    await Log.findByIdAndDelete(log[0]._id);
+  }
+  if (logNote) {
+    await Log.create({
+      logNote: logNote,
+      created: new Date(),
+    });
+  }
   const lesson = await Class.findById(class_id);
   if (lesson) {
     const update = await Class.findByIdAndUpdate(class_id, req.body, {
@@ -98,7 +308,7 @@ const getClass = asyncHandler(async (req, res) => {
 //
 const getStudentClass = asyncHandler(async (req, res) => {
   const { student_id } = req.params;
-  const lesson = await Class.find({ student_id: student_id });
+  const lesson = await Class.find({ student_id: student_id }).sort({ _id: -1 });
   if (!lesson) {
     res.status(400);
     throw new Error("Lesson doesn't exist");
@@ -108,8 +318,21 @@ const getStudentClass = asyncHandler(async (req, res) => {
 });
 
 const deleteClass = asyncHandler(async (req, res) => {
+  console.log(req.body, "bod");
   const { class_id } = req.params;
+  const { logNote } = req.body;
+  const log = await Log.find({});
+  if (log.length >= 50) {
+    await Log.findByIdAndDelete(log[0]._id);
+  }
+  if (logNote) {
+    await Log.create({
+      logNote: logNote,
+      created: new Date(),
+    });
+  }
   const lesson = await Class.findById(class_id);
+
   if (!lesson) {
     res.status(400);
     throw new Error("Class doesn't exist");
@@ -137,6 +360,15 @@ const deleteClass = asyncHandler(async (req, res) => {
   }
 });
 
+const getRecent = asyncHandler(async (req, res) => {
+  const lesson = await Class.find({
+    absence: false,
+    presence: false,
+    rescheduled: false,
+  }).sort({ classDate: "asc" });
+  res.status(200).json(lesson);
+});
+
 module.exports = {
   createClass,
   updateClass,
@@ -144,4 +376,6 @@ module.exports = {
   getClass,
   getStudentClass,
   deleteClass,
+  getRecent,
+  createTenClass,
 };

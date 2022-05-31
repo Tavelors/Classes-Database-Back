@@ -41,6 +41,12 @@ const classSchema = new Schema(
     lockButton: {
       type: Boolean,
     },
+    classNumber: {
+      type: Number,
+    },
+    description: {
+      type: String,
+    },
   },
   {
     timestamps: true,

@@ -5,11 +5,14 @@ const {
   getStudents,
   updateStudent,
   getStudentById,
+  getStudentQuery,
+  deleteStudent,
 } = require("../controllers/studentController");
 const { protect } = require("../errors/auth");
-router.post("/create", createStudent);
-router.put("/update/:student_id", updateStudent);
-router.get("/students", getStudents);
-router.get("/:student_id", getStudentById);
-// router.get("/:student_id", getStudentById);
+router.get("/sortstudents/", protect, getStudentQuery);
+router.post("/create", protect, createStudent);
+router.put("/update/:student_id", protect, updateStudent);
+router.get("/students", protect, getStudents);
+router.get("/:student_id", protect, getStudentById);
+router.delete("/:student_id", protect, deleteStudent);
 module.exports = router;
