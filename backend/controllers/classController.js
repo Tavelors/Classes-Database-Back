@@ -365,7 +365,7 @@ const getRecent = asyncHandler(async (req, res) => {
     absence: false,
     presence: false,
     rescheduled: false,
-  }).sort({ AbsenceDate: "asc", classDate: "asc" });
+  }).sort({ classDate: "asc" });
   res.status(200).json(lesson);
 });
 
