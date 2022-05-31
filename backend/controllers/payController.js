@@ -66,7 +66,7 @@ const getPayByStudentId = asyncHandler(async (req, res) => {
   }
   res.status(200).json(pay);
 });
-
+//
 const getAllPay = asyncHandler(async (req, res) => {
   const pay = await Pay.find({});
   res.status(200).json(pay);
