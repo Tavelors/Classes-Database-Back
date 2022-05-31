@@ -13,7 +13,7 @@ const protect = asyncHandler(async (req, res, next) => {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       console.log(decoded, "decoded");
       req.user = await User.findById(decoded.id).select("-password");
-      if (req.user.email === "test@email.com") {
+      if (req.user.email === "sl.instituto.de.idiomas@gmail.com") {
         console.log(req.user);
         next();
       }
