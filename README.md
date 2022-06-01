@@ -32,11 +32,14 @@ npm i
 **2. Create Databases**
 
 - The project has a development database
-- To create them:
+- Create one at [Mongo](https://www.mongodb.com/)
 - create a .env file and include:
  MONGO_URI = YOUR DATABASE
  JWT_SECRET = YOUR SECRET
 
 **3. Start the server using nodemon**
-- type in command line: npm run server
+in your .env file include: 
+NODE_ENV = production
+PORT = YOURPORTOFCHOICE
+-type npm run server
 
