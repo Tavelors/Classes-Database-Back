@@ -265,6 +265,7 @@ const updateClass = asyncHandler(async (req, res) => {
   const { class_id } = req.params;
   const { logNote } = req.body;
   const log = await Log.find({});
+  console.log(logNote);
   if (log.length >= 50) {
     await Log.findByIdAndDelete(log[0]._id);
   }
@@ -281,6 +282,7 @@ const updateClass = asyncHandler(async (req, res) => {
       upsert: true,
       timestamps: { createdAt: false, updatedAt: true },
     });
+    console.log(update);
     res.status(200).json(update);
   }
 });
