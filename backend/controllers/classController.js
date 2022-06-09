@@ -343,14 +343,19 @@ const deleteClass = asyncHandler(async (req, res) => {
         bank: student.bank - 1,
       });
     }
-    if (lesson.presence) {
+    if (lesson.presence && !lesson.rescheduledPresence) {
       await Student.findByIdAndUpdate(lesson.student_id, {
         presence: student.presence - 1,
       });
     }
-    if (lesson.rescheduledPresence) {
+    if (lesson.rescheduledPresence && lesson.presence) {
       await Student.findByIdAndUpdate(lesson.student_id, {
         presence: student.presence - 1,
+        bank: student.bank + 1,
+      });
+    }
+    if (lesson.rescheduledPresence && !lesson.presence) {
+      await Student.findByIdAndUpdate(lesson.student_id, {
         bank: student.bank + 1,
       });
     }

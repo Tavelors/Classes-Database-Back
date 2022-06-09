@@ -5,7 +5,7 @@ const User = require("../models/userModel");
 
 const registerUser = asyncHandler(async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
-  console.log("here");
+
   if (!firstName || !lastName || !email || !password) {
     res.status(400);
     throw new Error("Please include all fields");
@@ -15,7 +15,7 @@ const registerUser = asyncHandler(async (req, res) => {
   //     email: email,
   //   });
   const userExists = await User.findOne({ email });
-  console.log(userExists);
+
   if (userExists) {
     res.status(400);
     throw new Error("User already exists");

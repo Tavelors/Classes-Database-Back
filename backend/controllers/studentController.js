@@ -56,7 +56,7 @@ const updateStudent = asyncHandler(async (req, res) => {
   if (log.length >= 50) {
     await Log.findByIdAndDelete(log[0]._id);
   }
-  console.log(logNote);
+
   if (logNote) {
     await Log.create({
       logNote: logNote,
@@ -131,7 +131,7 @@ const getStudents = asyncHandler(async (req, res) => {
   const student = await Student.find({}).sort({ _id: -1 });
   const pay = await Pay.find({}).sort();
 
-  res.status(200).json(student);
+  res.status(200).json({ student: student, stuff: true });
 });
 
 const getStudentById = asyncHandler(async (req, res) => {

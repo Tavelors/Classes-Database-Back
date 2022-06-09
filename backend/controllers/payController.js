@@ -109,10 +109,23 @@ const postPayment = asyncHandler(async (req, res) => {
   res.status(201).json(pay);
 });
 
+const deletePayment = asyncHandler(async (req, res) => {
+  const { pay_id } = req.params;
+  const pay = await Pay.findById(pay_id);
+  if (!pay) {
+    res.status(400);
+    throw new Error("Pay not Found!");
+  } else {
+    await Pay.findByIdAndDelete(pay_id);
+    res.status(204).json({ msg: "Pay Deleted!" });
+  }
+});
+
 module.exports = {
   putPay,
   getPayByStudentId,
   getAllPay,
   getPayByClassId,
   postPayment,
+  deletePayment,
 };
