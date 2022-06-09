@@ -1,6 +1,6 @@
 # Classes-Database-Back
 
-The repo for the frontend can be found here: 
+The repo for the frontend can be found here:
 
 https://github.com/Tavelors/Classes-Database-Front
 
@@ -11,7 +11,6 @@ https://github.com/Tavelors/Classes-Database-Front
 - mongoose
 - express
 - express-async-handler
-- jest/TDD
 - colors
 - jsonwebtoken
 - cors
@@ -34,12 +33,11 @@ npm i
 - The project has a development database
 - Create one at [Mongo](https://www.mongodb.com/)
 - create a .env file and include:
- MONGO_URI = YOUR DATABASE
- JWT_SECRET = YOUR SECRET
+  MONGO_URI = YOUR DATABASE
+  JWT_SECRET = YOUR SECRET
 
 **3. Start the server using nodemon**
-in your .env file include: 
+in your .env file include:
 NODE_ENV = production
 PORT = YOURPORTOFCHOICE
 -type npm run server
-
